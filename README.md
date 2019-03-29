@@ -1,6 +1,6 @@
 # nightwatch-nunit3-reporter
 
-[![Build Status](https://dev.azure.com/FlorianRappl/nightwatch-nunit3-reporter/_apis/build/status/nightwatch-nunit3-reporter-CI?branchName=master)](https://dev.azure.com/FlorianRappl/nightwatch-nunit3-reporter/_build/latest?definitionId=4?branchName=master)
+[![Build Status](https://florianrappl.visualstudio.com/nightwatch-nunit3-reporter/_apis/build/status/nightwatch-nunit3-reporter-CI?branchName=master)](https://florianrappl.visualstudio.com/nightwatch-nunit3-reporter/_build/latest?definitionId=9&branchName=master)
 [![npm Version](https://img.shields.io/npm/v/nightwatch-nunit3-reporter.svg)](https://www.npmjs.com/package/nightwatch-nunit3-reporter)
 [![GitHub Tag](https://img.shields.io/github/tag/FlorianRappl/nightwatch-nunit3-reporter.svg)](https://github.com/FlorianRappl/nightwatch-nunit3-reporter/releases)
 [![GitHub Issues](https://img.shields.io/github/issues/FlorianRappl/nightwatch-nunit3-reporter.svg)](https://github.com/FlorianRappl/nightwatch-nunit3-reporter/issues)

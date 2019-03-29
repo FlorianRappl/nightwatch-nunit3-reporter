@@ -36,13 +36,13 @@ steps:
 - task: Npm@1
   inputs:
     command: publish
-    publishEndpoint: 'npm_registry'
+    publishEndpoint: 'NPM Connection 1'
   displayName: 'Publish package'
   condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/develop'))
 
 - task: GithubRelease@0
   inputs:
-    gitHubConnection: 'github'
+    gitHubConnection: 'GitHub connection 1'
     repositoryName: '$(Build.Repository.Name)'
     action: 'create'
     target: '$(Build.SourceVersion)'
