@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?><%
+  var skipped = (Array.isArray(module.skipped)) ? module.skipped.length : 0;
+  var passed = module.tests - skipped - module.failures;
+  var baseId = 1001;
+%>
+<test-run id="2" passed="<%= passed %>" failed="<%= module.failures %>" total="<%= module.tests %>" testcasecount="<%= module.tests %>" skipped="<%= skipped %>" duration="<%= module.time %>" start-time="<%= module.timestamp %>">
+  <test-suite id="<%= baseId++ %>" type="TestFixture" name="<%= className %>" fullname="<%= module.group || moduleName %>" failed="<%= module.failures %>" skipped="<%= skipped %>" asserts="<%= module.tests %>" total="<%= module.tests %>" duration="<%= module.time %>" start-time="<%= module.timestamp %>"><%
+    for (var item in module.completed) {
+      var testcase = module.completed[item];
+      var result = testcase.failed ? 'Failed' : 'Passed';
+      var assertions = testcase.assertions;
+    %>
+    <test-case id="<%= baseId++ %>" name="<%= item %>" classname="<%= className %>" result="<%= result %>" duration="<%= testcase.time %>" asserts="<%= assertions.length %>"><%
+      for (var i = 0; i < assertions.length; i++) {
+        var assertion = assertions[i];
+        var screenshots = assertion.screenshots || [];
+
+        if (assertion.failure) { %>
+      <failure>
+        <message><![CDATA[<%= assertion.message %>]]></message>
+        <stack-trace><![CDATA[<%= assertion.stackTrace %>]]></stack-trace>
+      </failure><%
+        }
+
+        if (screenshots.length > 0) { %>
+      <attachments><%
+          for (var j = 0; j < screenshots.length; j++) { %>
+        <attachment>
+          <filePath><%= screenshots[j] %></filePath>
+          <description><![CDATA[Screenshot]]></description>
+        </attachment><%
+          } %>
+      </attachments><%
+        }
+      }
+
+      if (testcase.failed > 0 && testcase.stackTrace) { %>
+      <failure message="<%= testcase.message %>">
+        <message><![CDATA[<%= testcase.message %>]]></message>
+        <stack-trace><![CDATA[<%= testcase.stackTrace %>]]></stack-trace>
+      </failure><%
+      } %>
+    </test-case><%
+    }
+
+    if (systemerr) { %>
+    <output>
+      <![CDATA[<%= systemerr %>]]>
+    </output><%
+    }
+
+    for (var j = 0; j < (module.skipped || []).length; j++) { %>
+    <test-case id="<%= baseId++ %>" name="<%= module.skipped[j] %>" classname="<%= className %>">
+      <reason>
+        <message><![CDATA[Ignored.]]></message>
+      </reason>
+    </test-case><%
+    } %>
+  </test-suite>
+</test-run>

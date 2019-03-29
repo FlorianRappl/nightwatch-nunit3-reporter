@@ -1,0 +1,7 @@
+src
+.editorconfig
+azure-pipelines.yml
+prettier.config.js
+tsconfig.json
+tslint.json
+*.tgz
