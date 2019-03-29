@@ -17,13 +17,30 @@ npm i nightwatch-nunit3-reporter
 
 This install the reporter. Besides Node.js and everything that comes with it you need to have [Nightwatch](https://nightwatchjs.org/) installed.
 
-The configuration of the package in Nightwatch is fairly simple. You can either use the package via the command line:
+The configuration of the package in Nightwatch is fairly simple. You can either use the package via the command line overriding the standard JUnit reporter:
 
 ```sh
-nightwatch --reporter nightwatch-nunit3-reporter
+nightwatch --reporter node_modules/nightwatch-nunit3-reporter/index.js
 ```
 
-Or you can use it via your globals.js file:
+Or you can use it via your globals.js file in addition to the JUnit reporter:
+
+```js
+import { createReporter } from 'nightwatch-nunit3-reporter';
+
+const reporter = createReporter({
+  output_folder: './reports', // should be different to the JUnit folder
+});
+
+module.exports = {
+  // ...
+  reporter,
+};
+```
+
+This way you need to set up the output folder. In the CLI case the output folder is determined by Nightwatch.js.
+
+Alternatively, if you start Nightwatch from the root directory where your *nightwatch.json* is located you can use:
 
 ```js
 import { reporter } from 'nightwatch-nunit3-reporter';
@@ -33,6 +50,8 @@ module.exports = {
   reporter,
 };
 ```
+
+This one uses the `output_folder` from the *nightwatch.json*. In this case a subfolder called *nunit3* will be created at the location specified by `output_folder`.
 
 ## License
 

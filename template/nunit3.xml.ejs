@@ -1,60 +1,85 @@
-<?xml version="1.0" encoding="utf-8" standalone="no" ?><%
-  var skipped = (Array.isArray(module.skipped)) ? module.skipped.length : 0;
-  var passed = module.tests - skipped - module.failures;
-  var baseId = 1001;
+<?xml version="1.0" encoding="utf-8" standalone="no"?><%
+  const skipped = (Array.isArray(module.skipped)) ? module.skipped.length : 0;
+  const passed = module.tests - skipped - module.failures;
+  const result = module.failures === 0 ? 'Passed' : 'Failed';
+  const success = module.failures === 0 ? 'True' : 'False';
+  const testcaseNames = Object.keys(module.completed);
+  const totalAsserts = testcaseNames.reduce((sum, item) => sum + module.completed[item].assertions.length, 0);
+  const started = new Date(module.timestamp || Date.now());
+  const ended = new Date(started);
+  const { pid, env, version } = process;
+  const frameworkVersion = `${version.substr(1)}.0`;
+  started.setSeconds(started.getSeconds() - module.time);
+  const startTime = started.toJSON().split('.')[0].split('T').join(' ') + 'Z';
+  const endTime = ended.toJSON().split('.')[0].split('T').join(' ') + 'Z';
+  let baseId = 0;
 %>
-<test-run id="2" passed="<%= passed %>" failed="<%= module.failures %>" total="<%= module.tests %>" testcasecount="<%= module.tests %>" skipped="<%= skipped %>" duration="<%= module.time %>" start-time="<%= module.timestamp %>">
-  <test-suite id="<%= baseId++ %>" type="TestFixture" name="<%= className %>" fullname="<%= module.group || moduleName %>" failed="<%= module.failures %>" skipped="<%= skipped %>" asserts="<%= module.tests %>" total="<%= module.tests %>" duration="<%= module.time %>" start-time="<%= module.timestamp %>"><%
-    for (var item in module.completed) {
-      var testcase = module.completed[item];
-      var result = testcase.failed ? 'Failed' : 'Passed';
-      var assertions = testcase.assertions;
-    %>
-    <test-case id="<%= baseId++ %>" name="<%= item %>" classname="<%= className %>" result="<%= result %>" duration="<%= testcase.time %>" asserts="<%= assertions.length %>"><%
-      for (var i = 0; i < assertions.length; i++) {
-        var assertion = assertions[i];
-        var screenshots = assertion.screenshots || [];
+<test-run id="2" asserts="<%= totalAsserts %>" passed="<%= passed %>" failed="<%= module.failures %>" total="<%= module.tests %>" inconclusive="0" testcasecount="<%= module.tests %>" skipped="<%= skipped %>" time="<%= module.time %>" duration="<%= module.time %>" start-time="<%= startTime %>" end-time="<%= endTime %>" result="<%= result %>" engine-version="3.0.0.0" clr-version="">
+  <test-suite type="Assembly" name="<%= module.group || moduleName %>" executed="True" result="<%= result %>" success="<%= success %>" time="<%= module.time %>" duration="<%= module.time %>" asserts="0">
+    <environment framework-version="<%= frameworkVersion %>" clr-version="" os-version="" platform="<%= env.HOSTTYPE %>" cwd="<%= env.PWD %>" machine-name="<%= env.NAME %>" user="<%= env.USER %>" user-domain="" culture="en-US" uiculture="en-US" />
+    <properties>
+      <property name="_PID" value="<%= pid %>" />
+    </properties>
+    <test-suite id="<%= baseId++ %>" type="TestSuite" name="<%= className %>" runstate="Runnable" fullname="<%= module.group || moduleName %>" passed="<%= passed %>" failed="<%= module.failures %>" inconclusive="0" skipped="<%= skipped %>" asserts="<%= totalAsserts %>" testcasecount="<%= module.tests %>" total="<%= module.tests %>" time="<%= module.time %>" duration="<%= module.time %>" result="<%= result %>" start-time="<%= startTime %>" end-time="<%= endTime %>"><%
 
-        if (assertion.failure) { %>
-      <failure>
-        <message><![CDATA[<%= assertion.message %>]]></message>
-        <stack-trace><![CDATA[<%= assertion.stackTrace %>]]></stack-trace>
-      </failure><%
+      for (const item of testcaseNames) {
+        const testcase = module.completed[item];
+        const testresult = testcase.failed ? 'Failed' : 'Passed';
+        const assertions = testcase.assertions;
+
+        %>
+      <test-case tests="1" name="<%= item %>" fullname="<%= item %>" methodname="<%= item %>" classname="<%= className %>" result="<%= testresult %>" runstate="Runnable" start-time="<%= testcase.timestamp %>" duration="<%= testcase.time %>" time="<%= testcase.time %>" asserts="<%= assertions.length %>"><%
+        for (const assertion of assertions) {
+          const screenshots = assertion.screenshots || [];
+
+          if (assertion.failure) {
+
+          %>
+        <failure>
+          <message><![CDATA[<%= assertion.message %>]]></message>
+          <stack-trace><![CDATA[<%= assertion.stackTrace %>]]></stack-trace>
+        </failure><%
+          }
+
+          if (screenshots.length > 0) {
+
+          %>
+        <attachments><%
+            for (const screenshot of screenshots) {
+
+            %>
+          <attachment>
+            <filePath><%= screenshot %></filePath>
+            <description><![CDATA[Screenshot]]></description>
+          </attachment><%
+            }
+          %>
+        </attachments><%
+          }
         }
 
-        if (screenshots.length > 0) { %>
-      <attachments><%
-          for (var j = 0; j < screenshots.length; j++) { %>
-        <attachment>
-          <filePath><%= screenshots[j] %></filePath>
-          <description><![CDATA[Screenshot]]></description>
-        </attachment><%
-          } %>
-      </attachments><%
-        }
+        if (testcase.failed > 0 && testcase.stackTrace) { %>
+        <failure message="<%= testcase.message %>">
+          <message><![CDATA[<%= testcase.message %>]]></message>
+          <stack-trace><![CDATA[<%= testcase.stackTrace %>]]></stack-trace>
+        </failure><%
+        } %>
+      </test-case><%
       }
 
-      if (testcase.failed > 0 && testcase.stackTrace) { %>
-      <failure message="<%= testcase.message %>">
-        <message><![CDATA[<%= testcase.message %>]]></message>
-        <stack-trace><![CDATA[<%= testcase.stackTrace %>]]></stack-trace>
-      </failure><%
+      if (systemerr) { %>
+      <output>
+        <![CDATA[<%= systemerr %>]]>
+      </output><%
+      }
+
+      for (var j = 0; j < (module.skipped || []).length; j++) { %>
+      <test-case name="<%= module.skipped[j] %>" methodname="<%= module.skipped[j] %>" classname="<%= className %>" result="Skipped" runstate="Skipped" duration="0" asserts="0">
+        <reason>
+          <message><![CDATA[Ignored.]]></message>
+        </reason>
+      </test-case><%
       } %>
-    </test-case><%
-    }
-
-    if (systemerr) { %>
-    <output>
-      <![CDATA[<%= systemerr %>]]>
-    </output><%
-    }
-
-    for (var j = 0; j < (module.skipped || []).length; j++) { %>
-    <test-case id="<%= baseId++ %>" name="<%= module.skipped[j] %>" classname="<%= className %>">
-      <reason>
-        <message><![CDATA[Ignored.]]></message>
-      </reason>
-    </test-case><%
-    } %>
+    </test-suite>
   </test-suite>
 </test-run>
