@@ -1,5 +1,9 @@
 # nightwatch-nunit3-reporter Changelog
 
+## 1.1.1
+
+- Updated dependencies
+
 ## 1.1.0
 
 - Added `createReporter`
