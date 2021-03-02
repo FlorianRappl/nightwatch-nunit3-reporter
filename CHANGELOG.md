@@ -1,5 +1,10 @@
 # nightwatch-nunit3-reporter Changelog
 
+## 1.1.2
+
+- Updated dependencies
+- Enhanced template by adding 'fullname' attribute to the skipped testcases
+
 ## 1.1.1
 
 - Updated dependencies
