@@ -4,6 +4,7 @@
 
 - Updated dependencies
 - Enhanced template by adding 'fullname' attribute to the skipped testcases
+- adapted new types after package upgrade
 
 ## 1.1.1
 

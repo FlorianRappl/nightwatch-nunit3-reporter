@@ -32,8 +32,6 @@ export function stackTraceFilter(parts: Array<string>) {
     .join('\n');
 }
 
-export function createReportFolder(output_folder: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    mkdirp(output_folder, err => (err ? reject(err) : resolve()));
-  });
+export function createReportFolder(output_folder: string): Promise<string | undefined> {
+  return mkdirp(output_folder);
 }
