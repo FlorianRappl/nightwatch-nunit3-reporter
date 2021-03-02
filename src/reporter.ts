@@ -38,9 +38,9 @@ export class NUnit3Reporter {
   }
 
   private writeReportFile(filename: string, rendered: string, shouldCreateFolder: boolean, output_folder: string) {
-    const promise = shouldCreateFolder ? createReportFolder(output_folder) : Promise.resolve();
+    const promise: Promise<any> = shouldCreateFolder ? createReportFolder(output_folder) : Promise.resolve();
     return promise.then(() => {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         writeFile(filename, rendered, err => (err ? reject(err) : resolve()));
       });
     });
