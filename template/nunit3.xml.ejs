@@ -74,7 +74,7 @@
       }
 
       for (var j = 0; j < (module.skipped || []).length; j++) { %>
-      <test-case name="<%= module.skipped[j] %>" methodname="<%= module.skipped[j] %>" classname="<%= className %>" result="Skipped" runstate="Skipped" duration="0" asserts="0">
+      <test-case name="<%= module.skipped[j] %>" fullname="<%= module.skipped[j] %>" methodname="<%= module.skipped[j] %>" classname="<%= className %>" result="Skipped" runstate="Skipped" duration="0" asserts="0">
         <reason>
           <message><![CDATA[Ignored.]]></message>
         </reason>
