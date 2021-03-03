@@ -1,5 +1,9 @@
 # nightwatch-nunit3-reporter Changelog
 
+## 1.2.0
+
+- Updated pipelines
+
 ## 1.1.2
 
 - Updated dependencies
